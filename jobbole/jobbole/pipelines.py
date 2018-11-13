@@ -98,7 +98,26 @@ class MysqlTwistedPipeline(object):
                 '''
         #sql_data =
         cursor.execute(insert_sql, item["image_url_id"])
-
+        
+ #搜索建议部分       
+from elasticsearch_dsl import DocType, Date, Integer, Keyword, Text, connections,Completion
+es=connections.connections.create_connection(ArticleType.__doc__type.using)
+def gen_suggest(index,info_tuple):
+    #根据字符串生成所搜建议数据
+    #python重要性titel:10
+    used_words=set()
+    suggest=[]
+    for text,weight in info_tuple:
+        if text:
+            #调用es的analyze借口分析字符串
+            words=es.indices.analyze(index=index,analyer="ik_max_word",params={'filter':['lowercase']},body=text)
+            anylzed_words=set([r['token'] for r in words['tokens'] if len(r["token"])>1])
+            new_words=anylzed_words-used_words
+        else:
+            new_words=set()
+        if new_words:
+            suggest.append({"input":list(new_words),"weight":weight})
+    return suggest
 
 class ElasicsearchPipline(object):
     def process_item(self, item, spider):
