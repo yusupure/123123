@@ -101,7 +101,7 @@ class MysqlTwistedPipeline(object):
         
  #搜索建议部分       
 from elasticsearch_dsl import DocType, Date, Integer, Keyword, Text, connections,Completion
-es=connections.connections.create_connection(ArticleType.__doc__type.using)
+es=connections.connections.create_connection(ArticleType._doc_type.using)
 def gen_suggest(index,info_tuple):
     #根据字符串生成所搜建议数据
     #python重要性titel:10
@@ -122,7 +122,7 @@ def gen_suggest(index,info_tuple):
 class ElasicsearchPipline(object):
     def process_item(self, item, spider):
         article=ArticleType()
-
+        article.suggest=gen_analyzer(ArticleType._doc_type.index, ((article.title,10)))
         article.title =item['title']
         article.datalist =item['datalist']
         article.dianzang =item['dianzang']
