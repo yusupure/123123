@@ -110,7 +110,7 @@ def gen_suggest(index,info_tuple):
     for text,weight in info_tuple:
         if text:
             #调用es的analyze借口分析字符串
-            words=es.indices.analyze(index=index,analyer="ik_max_word",params={'filter':['lowercase']},body=text)
+            words=es.indices.analyze(index=index,analyzer="ik_max_word",params={'filter':['lowercase']},body=text)
             anylzed_words=set([r['token'] for r in words['tokens'] if len(r["token"])>1])
             new_words=anylzed_words-used_words
         else:
