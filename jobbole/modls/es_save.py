@@ -8,7 +8,7 @@ class CustomAnalyzer(_CustomAnalyzer):
     def get_analysis_definition(self):
         return {}
 #filter的大小写转换
-ik_analyzer=CustomAnalyzer("ik_max_word",filter("lowercase"))
+ik_analyzer=CustomAnalyzer("ik_max_word",filter=["lowercase"])
 
 class ArticleType(DocType):
     suggest=Completion(analyzer=ik_analyzer)#因为会报错所以处理
